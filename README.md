@@ -4,10 +4,14 @@ from tkinter import *
 from threading import Thread
 
 def sketch(image):
-    img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)                               # Convert image to grayscale
-    img_gray_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)                            # Clean up image using Gaussian Blur
-    canny_edges = cv2.Canny(img_gray_blur, 30, 70)                                   # Extract edges
-    ret, mask = cv2.threshold(canny_edges, 120, 255, cv2.THRESH_BINARY_INV)          # Do an invert binarize the image
+    # Convert image to grayscale
+    img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Clean up image using Gaussian Blur
+    img_gray_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
+    # Extract edges
+    canny_edges = cv2.Canny(img_gray_blur, 30, 70)
+    # Do an invert binarize the image
+    ret, mask = cv2.threshold(canny_edges, 120, 255, cv2.THRESH_BINARY_INV)
     return mask
 
 def liveSketch():
@@ -19,35 +23,42 @@ def liveSketch():
             break
         cv2.imshow("Live Sketch", sketch(frame))
 
-        if cv2.waitKey(1) & 0xFF == ord('c'):                              # Capture an image when 'c' is pressed
+        # Capture an image when 'c' is pressed
+        if cv2.waitKey(1) & 0xFF == ord('c'):
             result, image = cap.read()
             if result:
                 cv2.imshow("Captured", image)
-                cv2.imwrite("mypic.jpg", image)                                  # Ensure the 'image' folder exists or change the path
+                # Ensure the 'image' folder exists or change the path
+                cv2.imwrite("mypic.jpg", image)
                 print("Image saved as 'mypic.jpg'")
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):                                      # Exit when 'q' is pressed
+        # Exit when 'q' is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
 
+
 def startThread():
-    thread = Thread(target=liveSketch)              # Run OpenCV functions in a separate thread to avoid blocking Tkinter's main loop
+    # Run OpenCV functions in a separate thread to avoid blocking Tkinter's main loop
+    thread = Thread(target=liveSketch)
     thread.daemon = True
     thread.start()
 
-
 def exitApp():
     root.destroy()
-root = Tk()                                         # Tkinter GUI
+
+# Tkinter GUI
+root = Tk()
 root.title("Live Sketch")
 root.geometry("400x300")
 
 heading = Label(root, text="Live Sketch", font="Arial 20 bold", fg="yellow", bg="blue")
 heading.pack(pady=20)
 
-btn1 = Button(root, text="Start Live Sketch", width=20, bg='black', fg='white',font='Arial 12 bold', command=startThread)
+btn1 = Button(root, text="Start Live Sketch", width=20, bg='black', fg='white',
+              font='Arial 12 bold', command=startThread)
 btn1.pack(pady=10)
 
 exitbtn = Button(root, text="Exit", width=20, bg='black', fg='white', font='Arial 12 bold', command=exitApp)
