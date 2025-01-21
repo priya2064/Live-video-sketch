@@ -22,43 +22,35 @@ def liveSketch():
             print("Failed to capture video.")
             break
         cv2.imshow("Live Sketch", sketch(frame))
-
-        # Capture an image when 'c' is pressed
-        if cv2.waitKey(1) & 0xFF == ord('c'):
+        if cv2.waitKey(1) & 0xFF == ord('c'):      # Capture an image when 'c' is pressed
             result, image = cap.read()
             if result:
                 cv2.imshow("Captured", image)
-                # Ensure the 'image' folder exists or change the path
-                cv2.imwrite("mypic.jpg", image)
+                cv2.imwrite("mypic.jpg", image)      # Ensure the 'image' folder exists or change the path
                 print("Image saved as 'mypic.jpg'")
 
-        # Exit when 'q' is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):     # Exit when 'q' is pressed
             break
 
     cap.release()
     cv2.destroyAllWindows()
 
-
 def startThread():
-    # Run OpenCV functions in a separate thread to avoid blocking Tkinter's main loop
-    thread = Thread(target=liveSketch)
+    thread = Thread(target=liveSketch)        # Run OpenCV functions in a separate thread to avoid blocking Tkinter's main loop
     thread.daemon = True
     thread.start()
 
 def exitApp():
     root.destroy()
 
-# Tkinter GUI
-root = Tk()
+root = Tk()                  # Tkinter GUI
 root.title("Live Sketch")
 root.geometry("400x300")
 
 heading = Label(root, text="Live Sketch", font="Arial 20 bold", fg="yellow", bg="blue")
 heading.pack(pady=20)
 
-btn1 = Button(root, text="Start Live Sketch", width=20, bg='black', fg='white',
-              font='Arial 12 bold', command=startThread)
+btn1 = Button(root, text="Start Live Sketch", width=20, bg='black', fg='white',font='Arial 12 bold', command=startThread)
 btn1.pack(pady=10)
 
 exitbtn = Button(root, text="Exit", width=20, bg='black', fg='white', font='Arial 12 bold', command=exitApp)
